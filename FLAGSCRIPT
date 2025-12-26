@@ -1,0 +1,64 @@
+--FULL SCRIPT, JOIN MY DISCORD FOR LOADSTRING
+
+local Players = game:GetService("Players")
+local Lighting = game:GetService("Lighting")
+local Terrain = workspace.Terrain
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+
+local function applyflags()
+	-- Lighting
+	Lighting.GlobalShadows = false
+	Lighting.Brightness = 1
+	Lighting.FogEnd = 9e9
+	Lighting.EnvironmentDiffuseScale = 0
+	Lighting.EnvironmentSpecularScale = 0
+
+	for _, v in ipairs(Lighting:GetChildren()) do
+		if v:IsA("PostEffect") then
+			v.Enabled = false
+		end
+	end
+
+	-- Terrain / Water
+	Terrain.WaterWaveSize = 0
+	Terrain.WaterWaveSpeed = 0
+	Terrain.WaterReflectance = 0
+	Terrain.WaterTransparency = 1
+
+	-- Workspace nuking
+	for _, v in ipairs(workspace:GetDescendants()) do
+		if v:IsA("ParticleEmitter")
+			or v:IsA("Beam")
+			or v:IsA("Explosion") then
+			v.Enabled = false
+
+		elseif v:IsA("Decal") or v:IsA("Texture") then
+			v.Transparency = 1
+
+		elseif v:IsA("BasePart") then
+			v.Material = Enum.Material.Plastic
+			v.Reflectance = 0
+		end
+
+		-- Accessories
+		if v:IsA("Accessory") then
+			for _, p in ipairs(v:GetDescendants()) do
+				if p:IsA("BasePart") then
+					p.Transparency = 1
+				end
+			end
+		end
+	end
+end
+RunService.RenderStepped:Connect(function()
+
+	for _, v in ipairs(workspace:GetDescendants()) do
+		if v:IsA("ParticleEmitter") or v:IsA("Beam") then
+			v.Enabled = false
+		end
+	end
+end)
+
+applyflags()
